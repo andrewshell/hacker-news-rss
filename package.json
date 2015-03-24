@@ -25,6 +25,7 @@
     "moment": "^2.9.0",
     "nconf": "^0.7.1",
     "request": "^2.53.0",
+    "tracer": "^0.7.4",
     "xmlbuilder": "^2.6.2"
   }
 }

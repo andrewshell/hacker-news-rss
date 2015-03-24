@@ -8,10 +8,12 @@
         config = require('./lib/config'),
         server,
         hnApi = require('./lib/hacker-news-api'),
+        rssCloud = require('./lib/rss-cloud'),
         rssFeed = require('./lib/rss-feed'),
-        newstories;
+        newstories,
+        logger = require('tracer').console();
 
-    console.log(config.app.name + ' ' + config.app.version);
+    logger.log(config.app.name + ' ' + config.app.version);
 
     app = express();
 
@@ -50,6 +52,7 @@
                 description: 'New links posted to Hacker News',
                 link: 'https://news.ycombinator.com/newest',
                 language: 'en-us',
+                'atom:link': {},
                 cloud: {
                     '@domain': 'rpc.rsscloud.io',
                     '@port': 5337,
@@ -63,10 +66,15 @@
 
     hnApi.listen('v0/newstories', function (err, items) {
         if (err) {
-            return console.error(err);
+            return logger.error(err);
         }
         async.map(items, formatRssItem, function (err, items) {
-            newstories.addItems(items);
+            newstories.addItems(items, function (err) {
+                if (err) {
+                    return logger.error(err);
+                }
+                rssCloud.ping(config.app.host + '/newstories.xml');
+            });
         });
     });
 
@@ -80,15 +88,15 @@
         var host = server.address().address,
             port = server.address().port;
 
-        console.log('Listening at http://%s:%s', host, port);
+        logger.log('Listening at http://%s:%s', host, port);
     })
         .on('error', function (error) {
             switch (error.code) {
             case 'EADDRINUSE':
-                console.log('Error: Port ' + config.server.port + ' is already in use.');
+                logger.error('Error: Port ' + config.server.port + ' is already in use.');
                 break;
             default:
-                console.log(error.code);
+                logger.error(error.code);
             }
         });
 }());
