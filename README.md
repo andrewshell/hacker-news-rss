@@ -16,4 +16,4 @@ node app.js
 * **APP_HOST** What should be the url prefix in the feed for atom:self (default: http://hn.geekity.com)
 * **PORT** What port is the app running on (default: 8080)
 * **RSS_CLOUD_PING** URL of rssCloud server ping endpoint (default: http://rpc.rsscloud.io:5337/ping)
-* **RSS_MAXITEMS** Maximum number of items in RSS feed
+* **RSS_MAXITEMS** Maximum number of items in RSS feed (default: 50)
