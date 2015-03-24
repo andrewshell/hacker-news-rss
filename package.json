@@ -1,0 +1,30 @@
+{
+  "name": "hacker-news-rss",
+  "version": "0.0.0",
+  "description": "RSS 2.0 Feed From Hacker News API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:andrewshell/hacker-news-rss.git"
+  },
+  "author": "Andrew Shell <andrew@andrewshell.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewshell/hacker-news-rss/issues"
+  },
+  "homepage": "https://github.com/andrewshell/hacker-news-rss",
+  "dependencies": {
+    "async": "^0.9.0",
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "express-handlebars": "^1.2.2",
+    "firebase": "^2.2.3",
+    "moment": "^2.9.0",
+    "nconf": "^0.7.1",
+    "request": "^2.53.0",
+    "xmlbuilder": "^2.6.2"
+  }
+}
