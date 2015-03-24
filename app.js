@@ -11,7 +11,8 @@
         rssCloud = require('./lib/rss-cloud'),
         rssFeed = require('./lib/rss-feed'),
         newstories,
-        logger = require('tracer').console();
+        logger = require('tracer').console(),
+        moment = require('moment');
 
     logger.log(config.app.name + ' ' + config.app.version);
 
@@ -32,6 +33,7 @@
         rssItem.link = item.url;
         rssItem.comments = 'https://news.ycombinator.com/item?id=' + item.id;
         rssItem.guid = rssItem.comments;
+        rssItem.pubDate = moment.utc(item.time, 'X').format('ddd, DD MMM YYYY HH:mm:ss') + ' GMT';
         callback(null, rssItem);
     }
 
