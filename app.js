@@ -34,13 +34,20 @@
         rssItem.comments = 'https://news.ycombinator.com/item?id=' + item.id;
         rssItem.guid = rssItem.comments;
         rssItem.pubDate = moment.utc(item.time, 'X').format('ddd, DD MMM YYYY HH:mm:ss') + ' GMT';
-        callback(null, rssItem);
+        return callback(null, {'item': rssItem});
     }
 
     // Homepage
 
     app.get('/', function (req, res) {
-        res.render('index');
+        switch (req.accepts('html')) {
+        case 'html':
+            res.render('index');
+            break;
+        default:
+            res.status(406).send('Not Acceptable');
+            break;
+        }
     });
 
     // Feed for newstories
@@ -71,18 +78,24 @@
             return logger.error(err);
         }
         async.map(items, formatRssItem, function (err, items) {
-            newstories.addItems(items, function (err) {
-                if (err) {
-                    return logger.error(err);
-                }
-                rssCloud.ping(config.app.host + '/newstories.xml');
-            });
+            if (err) {
+                return logger.error(err);
+            }
+            newstories.setItems(items);
+            rssCloud.ping(config.app.host + '/newstories.xml');
         });
     });
 
     app.get('/newstories.xml', function (req, res) {
-        res.set('Content-Type', 'application/rss+xml');
-        res.send(newstories.build(config.app.host + '/newstories.xml'));
+        switch (req.accepts('xml')) {
+        case 'xml':
+            res.set('Content-Type', 'application/rss+xml');
+            res.send(newstories.build(config.app.host + '/newstories.xml'));
+            break;
+        default:
+            res.status(406).send('Not Acceptable');
+            break;
+        }
     });
 
     // Start server
