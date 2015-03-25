@@ -32,7 +32,10 @@
         rssItem.title = item.title;
         rssItem.link = item.url;
         rssItem.comments = 'https://news.ycombinator.com/item?id=' + item.id;
-        rssItem.guid = rssItem.comments;
+        rssItem.guid = {
+            '#text': rssItem.comments,
+            '@isPermaLink': false
+        };
         rssItem.pubDate = moment.utc(item.time, 'X').format('ddd, DD MMM YYYY HH:mm:ss') + ' GMT';
         return callback(null, {'item': rssItem});
     }
