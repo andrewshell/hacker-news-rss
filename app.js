@@ -60,8 +60,8 @@
             '@version': '2.0',
             '@xmlns:atom': 'http://www.w3.org/2005/Atom',
             channel: {
-                title: 'New Links | Hacker News',
-                description: 'New links posted to Hacker News',
+                title: 'Hacker News Firehose',
+                description: 'All links posted to Hacker News.',
                 link: 'https://news.ycombinator.com/newest',
                 language: 'en-us',
                 'atom:link': {},
