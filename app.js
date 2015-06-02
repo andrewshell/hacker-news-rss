@@ -68,7 +68,7 @@
                 cloud: {
                     '@domain': 'rpc.rsscloud.io',
                     '@port': 5337,
-                    '@path': '/ping',
+                    '@path': '/pleaseNotify',
                     '@registerProcedure': '',
                     '@protocol': 'http-post'
                 }
