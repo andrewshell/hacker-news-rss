@@ -26,8 +26,15 @@
         maxAge: '1d'
     }));
 
+    function filterUndefined(item, callback) {
+        callback(item !== undefined && item !== null);
+    }
+
     // Translates a hnApi item into RSS 2.0 item
     function formatRssItem(item, callback) {
+        if (undefined === item) {
+            return callback('item undefined');
+        }
         var rssItem = {};
         rssItem.title = item.title;
         rssItem.link = item.url;
@@ -78,14 +85,21 @@
 
     hnApi.listen('v0/newstories', function (err, items) {
         if (err) {
-            return logger.error(err);
-        }
-        async.map(items, formatRssItem, function (err, items) {
-            if (err) {
-                return logger.error(err);
+            logger.error(err);
+            if (0 == items.length) {
+                return;
             }
-            newstories.setItems(items);
-            rssCloud.ping(config.app.host + '/newstories.xml');
+        }
+        logger.info(items.length);
+        async.filter(items, filterUndefined, function filterUndefinedCallback(items) {
+            async.map(items, formatRssItem, function mapFormatRssItemCallback(err, items) {
+                if (err) {
+                    return logger.error(err);
+                }
+                logger.info(items.length);
+                newstories.setItems(items);
+                rssCloud.ping(config.app.host + '/newstories.xml');
+            });
         });
     });
 
@@ -94,6 +108,18 @@
         case 'xml':
             res.set('Content-Type', 'application/rss+xml');
             res.send(newstories.build(config.app.host + '/newstories.xml'));
+            break;
+        default:
+            res.status(406).send('Not Acceptable');
+            break;
+        }
+    });
+
+    app.get('/newstories.json', function (req, res) {
+        switch (req.accepts('json')) {
+        case 'json':
+            res.set('Content-Type', 'application/json');
+            res.json(newstories.getFeed());
             break;
         default:
             res.status(406).send('Not Acceptable');
