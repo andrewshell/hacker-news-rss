@@ -12,7 +12,8 @@
         rssFeed = require('./lib/rss-feed'),
         newstories,
         logger = require('tracer').console(),
-        moment = require('moment');
+        moment = require('moment'),
+        cachedXml = '';
 
     logger.log(config.app.name + ' ' + config.app.version);
 
@@ -83,7 +84,7 @@
         }
     });
 
-    hnApi.listen('v0/newstories', function (err, items) {
+    hnApi.listen('v0/newstories', function hnApiListen(err, items) {
         if (err) {
             logger.error(err);
             if (0 == items.length) {
@@ -91,15 +92,14 @@
             }
         }
         logger.info(items.length);
-        async.filter(items, filterUndefined, function filterUndefinedCallback(items) {
-            async.map(items, formatRssItem, function mapFormatRssItemCallback(err, items) {
-                if (err) {
-                    return logger.error(err);
-                }
-                logger.info(items.length);
-                newstories.setItems(items);
-                rssCloud.ping(config.app.host + '/newstories.xml');
-            });
+        async.map(items, formatRssItem, function mapFormatRssItemCallback(err, items) {
+            if (err) {
+                return logger.error(err);
+            }
+            logger.info(items.length);
+            newstories.setItems(items);
+            cachedXml = newstories.build(config.app.host + '/newstories.xml');
+            rssCloud.ping(config.app.host + '/newstories.xml');
         });
     });
 
@@ -107,7 +107,7 @@
         switch (req.accepts('xml')) {
         case 'xml':
             res.set('Content-Type', 'application/rss+xml');
-            res.send(newstories.build(config.app.host + '/newstories.xml'));
+            res.send(cachedXml);
             break;
         default:
             res.status(406).send('Not Acceptable');
