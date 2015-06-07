@@ -6,6 +6,7 @@
         appConfigHandlebars = require('./lib/app-config-handlebars'),
         express = require('express'),
         config = require('./lib/config'),
+        cors = require('cors'),
         server,
         hnApi = require('./lib/hacker-news-api'),
         rssCloud = require('./lib/rss-cloud'),
@@ -18,6 +19,8 @@
     logger.log(config.app.name + ' ' + config.app.version);
 
     app = express();
+
+    app.use(cors());
 
     appConfigHandlebars(app);
 
