@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    require('dotenv').config();
+
     var app,
         async = require('async'),
         appConfigHandlebars = require('./lib/app-config-handlebars'),
@@ -40,15 +42,19 @@
             return callback('item undefined');
         }
         var rssItem = {};
-        rssItem.title = item.title;
-        rssItem.link = item.url;
+        rssItem.title = item.title.trim();
+        if (item.url === undefined) {
+            rssItem.link = 'https://news.ycombinator.com/item?id=' + item.id;
+        } else {
+            rssItem.link = item.url.trim();
+        }
         rssItem.comments = 'https://news.ycombinator.com/item?id=' + item.id;
         rssItem.guid = {
             '#text': rssItem.comments,
             '@isPermaLink': false
         };
         rssItem.pubDate = moment.utc(item.time, 'X').format('ddd, DD MMM YYYY HH:mm:ss') + ' GMT';
-        return callback(null, {'item': rssItem});
+        return callback(null, rssItem);
     }
 
     // Homepage
@@ -90,7 +96,7 @@
     hnApi.listen('v0/newstories', function hnApiListen(err, items) {
         if (err) {
             logger.error(err);
-            if (0 == items.length) {
+            if (undefined === items || 0 == items.length) {
                 return;
             }
         }
