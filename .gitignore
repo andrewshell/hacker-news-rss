@@ -1,4 +1,6 @@
 .DS_Store
 .env
+.node-version
 node_modules
 package-lock.json
+Procfile
