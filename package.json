@@ -17,17 +17,17 @@
   },
   "homepage": "https://github.com/andrewshell/hacker-news-rss",
   "dependencies": {
-    "async": "^3.0.1",
+    "async": "^3.2.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "dotenv": "^8.0.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
-    "firebase": "^6.1.1",
-    "moment": "^2.24.0",
-    "nconf": "^0.10.0",
+    "express-handlebars": "^5.3.2",
+    "firebase": "^8.7.0",
+    "moment": "^2.29.1",
+    "nconf": "^0.11.3",
     "request": "^2.88.0",
-    "tracer": "^0.9.8",
-    "xmlbuilder": "^13.0.2"
+    "tracer": "^1.1.5",
+    "xmlbuilder": "^15.1.1"
   }
 }
