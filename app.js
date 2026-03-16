@@ -32,14 +32,15 @@
         maxAge: '1d'
     }));
 
-    function filterUndefined(item, callback) {
-        callback(item !== undefined && item !== null);
-    }
-
     // Translates a hnApi item into RSS 2.0 item
     function formatRssItem(item, callback) {
         if (undefined === item) {
-            return callback('item undefined');
+            logger.info('skipping undefined item');
+            return callback(null, null);
+        }
+        if (!item.title) {
+            logger.info('skipping item missing title: ' + JSON.stringify(item));
+            return callback(null, null);
         }
         var rssItem = {};
         rssItem.title = item.title.trim();
@@ -105,6 +106,7 @@
             if (err) {
                 return logger.error(err);
             }
+            items = items.filter(Boolean);
             logger.info(items.length);
             newstories.setItems(items);
             cachedXml = newstories.build(config.app.host + '/newstories.xml');
