@@ -36,3 +36,24 @@ To build and push a new image yourself:
 ```bash
 npm run docker:build-push
 ```
+
+### Dockge
+
+To run this in [Dockge](https://github.com/louislam/dockge), create a new
+stack, paste the compose below, and add a `.env` file to the stack (via the
+Dockge file editor) with the variables from [Env Variables](#env-variables)
+above — at minimum `APP_HOST` set to your feed's public URL:
+
+```yaml
+services:
+  hacker-news-rss:
+    image: ghcr.io/andrewshell/hacker-news-rss:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+networks: {}
+```
+
+If you override `PORT` in `.env`, update the ports mapping to match.
