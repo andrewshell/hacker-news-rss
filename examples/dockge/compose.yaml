@@ -1,0 +1,39 @@
+# Hacker News RSS — example stack for Dockge (https://github.com/louislam/dockge)
+#
+# Usage:
+#   1. In Dockge, create a new stack (e.g. "hacker-news-rss") and paste this file.
+#   2. Edit APP_HOST below to your public feed URL.
+#   3. Deploy.
+#
+# Pulls the published image from the GitHub Container Registry rather than
+# building, so this stack deploys without a checkout of the repo. To pin a
+# release, replace `:latest` with a version tag or git-sha tag (see
+# scripts/README.md for what's published).
+
+services:
+  hacker-news-rss:
+    image: ghcr.io/andrewshell/hacker-news-rss:latest
+    container_name: hacker-news-rss
+    restart: unless-stopped
+    ports:
+      # host:container — change the host side if 8080 is taken; usually you'd
+      # also front this with a reverse proxy terminating HTTPS.
+      - "8080:8080"
+    environment:
+      # Externally-reachable URL for this feed, no trailing slash. Used as
+      # the atom:link rel=self href and when registering with rssCloud.
+      APP_HOST: https://hn.example.com
+      # Optional overrides — see README.md for the full list.
+      # PORT: "8080"
+      # RSS_MAXITEMS: "50"
+      # RSS_CLOUD_PING: https://rpc.rsscloud.io/ping
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:8080/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
