@@ -77,19 +77,23 @@
         rss: {
             '@version': '2.0',
             '@xmlns:atom': 'http://www.w3.org/2005/Atom',
+            '@xmlns:source': 'https://source.scripting.com/',
             channel: {
                 title: 'Hacker News Firehose',
                 description: 'All links posted to Hacker News.',
                 link: 'https://news.ycombinator.com/newest',
                 language: 'en-us',
-                'atom:link': {},
+                'atom:link': [
+                    {'@rel': 'hub', '@href': 'https://rpc.rsscloud.io/websub'}
+                ],
                 cloud: {
                     '@domain': 'rpc.rsscloud.io',
-                    '@port': 5337,
+                    '@port': 80,
                     '@path': '/pleaseNotify',
                     '@registerProcedure': '',
                     '@protocol': 'http-post'
-                }
+                },
+                'source:cloud': 'https://rpc.rsscloud.io/pleaseNotify'
             }
         }
     });
